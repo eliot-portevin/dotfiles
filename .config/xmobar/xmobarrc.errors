@@ -1,0 +1,6 @@
+
+xmobarrc.hs:15:51: error:
+    lexical error in string/character literal at character '\61463'
+   |
+15 |                     , Run Date "<fc=#46d9ff><fn=1></fn> %H:%M</fc>" "date" 300
+   |                                                   ^
