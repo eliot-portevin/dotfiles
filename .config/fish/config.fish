@@ -13,13 +13,15 @@ function fish_greeting
 end
 
 function checkMode
-	set mode (defaults read -g AppleInterfaceStyle)
-
-	if test "$mode" = Dark
-		setTerminalProfile Gruvbox_Dark
-	else
-		setTerminalProfile Solarized_Light
-	end
+    # Only run this if the terminal is "Apple_Terminal"
+    if test "$TERM_PROGRAM" = "Apple_Terminal"
+        set mode (defaults read -g AppleInterfaceStyle)
+        if test "$mode" = Dark
+            setTerminalProfile Gruvbox_Dark
+        else
+            setTerminalProfile Solarized_Light
+        end
+    end
 end
 
 function setTerminalProfile
