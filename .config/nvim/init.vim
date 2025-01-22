@@ -103,4 +103,6 @@ let mapleader = " "
 nmap <leader>t :<C-u>echo "Normal map"<cr>
 vmap <leader>v :<C-u>echo "Visual map"<cr>
 
-set shell=bash
+set shell=bash						" Vim calls commands with bash
+
+hi Normal guibg=NONE ctermbg=NONE   " Sets Vim to be transparent
