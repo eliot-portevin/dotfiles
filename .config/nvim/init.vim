@@ -19,8 +19,14 @@ Plug 'mhinz/vim-startify'               " Vim menu
 Plug 'luochen1990/rainbow'              " Change paranthesis colour by pair
 Plug 'itchyny/lightline.vim'            " Vim status line
 Plug 'jiangmiao/auto-pairs'             " Auto open and close brackets
+Plug 'catppuccin/nvim', { 'as': 'catppuccin' } " Colour theme
 
 call plug#end()
+
+""""""""""""""""""""""""""""""""""""""""
+""""""""""""Catppuccin""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""
+colorscheme catppuccin-frappe
 
 """"""""""""""""""""""""""""""""""""""""
 """"""""""""Treesitter""""""""""""""""""
