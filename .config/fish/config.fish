@@ -38,7 +38,7 @@ end
 
 #
 # Set light/dark mode
-checkMode
+# checkMode
 
 #
 # Set aliases
