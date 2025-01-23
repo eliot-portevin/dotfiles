@@ -6,6 +6,7 @@ set autoindent
 set smartindent
 set termguicolors
 set mouse=a
+set foldmethod=indent
 highlight Normal ctermbg=NONE guibg=NONE
 
 "Plugins
