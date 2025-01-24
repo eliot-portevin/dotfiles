@@ -100,11 +100,26 @@ let g:rainbow_active = 1
 """"""""""""""""""""""""""""""""""""""""
 set number
 
-"Leader key
-let mapleader = " "
-nmap <leader>t :<C-u>echo "Normal map"<cr>
-vmap <leader>v :<C-u>echo "Visual map"<cr>
 
 set shell=bash						" Vim calls commands with bash
 
 hi Normal guibg=NONE ctermbg=NONE   " Sets Vim to be transparent
+
+""""""""""""""""""""""""""""""""""""""""
+""""""""""""""Compile .tex""""""""""""""
+""""""""""""""""""""""""""""""""""""""""
+function! CompileTex()
+  if expand('%:e') ==# 'tex'		" If current file is .tex
+    silent !pdflatex %
+    echo "Compilation complete!"
+  else
+    echo "Not a .tex file!"
+  endif
+endfunction
+
+
+"Leader key
+let mapleader = " "
+nmap <leader>t :<C-u>echo "Normal map"<cr>
+vmap <leader>v :<C-u>echo "Visual map"<cr>
+nnoremap <Leader>t :call CompileTex()<CR>
