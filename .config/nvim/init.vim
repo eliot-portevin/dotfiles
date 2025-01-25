@@ -106,20 +106,42 @@ set shell=bash						" Vim calls commands with bash
 hi Normal guibg=NONE ctermbg=NONE   " Sets Vim to be transparent
 
 """"""""""""""""""""""""""""""""""""""""
-""""""""""""""Compile .tex""""""""""""""
+""""""Run or Compile Current File"""""""
 """"""""""""""""""""""""""""""""""""""""
-function! CompileTex()
-  if expand('%:e') ==# 'tex'		" If current file is .tex
-    silent !pdflatex %
-    echo "Compilation complete!"
-  else
-    echo "Not a .tex file!"
-  endif
-endfunction
+function! RunOrCompile()
+    let filetype = expand('%:e')		" Get the file extension
+    let filename = expand('%:t')		" Get the file name
+    let start_time = reltime()			" Record the start time
 
+    write								" Run :w
+
+    if filetype ==# 'tex'
+        " Compile .tex file with pdflatex
+        silent execute '!pdflatex' shellescape(expand('%'), 1)
+        let status = "Compilation complete for " . filename
+
+    elseif filetype ==# 'py'
+        " Run .py file with Python 3
+        silent execute '!python3' shellescape(expand('%'), 1)
+        let status = "Finished running " . filename
+
+    elseif filetype ==# 'c'
+        " Compile and run .c file using make
+        silent execute '!make' shellescape(expand('%:r'), 1)
+        let status = "Compilation and execution complete for " . filename
+
+    else
+        echo "Unsupported file type: " . filetype
+        return
+    endif
+
+    " Calculate elapsed time
+    let elapsed_time = reltimestr(reltime(start_time))
+    echo status . " in " . elapsed_time . "s."
+endfunction
 
 "Leader key
 let mapleader = " "
 nmap <leader>t :<C-u>echo "Normal map"<cr>
 vmap <leader>v :<C-u>echo "Visual map"<cr>
-nnoremap <Leader>t :call CompileTex()<CR>
+nnoremap <Leader>r :call RunOrCompile()<CR>
