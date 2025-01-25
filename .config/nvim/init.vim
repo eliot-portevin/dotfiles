@@ -109,27 +109,28 @@ hi Normal guibg=NONE ctermbg=NONE   " Sets Vim to be transparent
 """"""Run or Compile Current File"""""""
 """"""""""""""""""""""""""""""""""""""""
 function! RunOrCompile()
-    let filetype = expand('%:e')		" Get the file extension
+    " Define a dictionary mapping file extensions to their commands
+    let file_commands = {
+                \ 'tex': 'pdflatex ' . shellescape(expand('%')),
+                \ 'py': 'python3 ' . shellescape(expand('%')),
+                \ 'c': 'make ' . shellescape(expand('%:r')) . ' && ./' . shellescape(expand('%:r'))
+                \ }
+    
+    let filetype = expand('%:e')        " Get the file extension
     let filename = expand('%:t')		" Get the file name
     let start_time = reltime()			" Record the start time
 
-    write								" Run :w
+    write								" Save the current file
 
-    if filetype ==# 'tex'
-        " Compile .tex file with pdflatex
-        silent execute '!pdflatex' shellescape(expand('%'), 1)
-        let status = "Compilation complete for " . filename
-
-    elseif filetype ==# 'py'
-        " Run .py file with Python 3
-        silent execute '!python3' shellescape(expand('%'), 1)
-        let status = "Finished running " . filename
-
-    elseif filetype ==# 'c'
-        " Compile and run .c file using make
-        silent execute '!make' shellescape(expand('%:r'), 1)
-        let status = "Compilation and execution complete for " . filename
-
+    if has_key(file_commands, filetype)
+        let command = file_commands[filetype]
+        let output = system(command)	" Execute the command and capture output
+        if v:shell_error
+            echohl ErrorMsg | echo "Command failed for " . filename | echohl None
+            call s:DisplayOutput(output, 1) " Show the output in a buffer (failure case)
+            return
+        endif
+        let status = "Operation successful for " . filename
     else
         echo "Unsupported file type: " . filetype
         return
@@ -138,6 +139,25 @@ function! RunOrCompile()
     " Calculate elapsed time
     let elapsed_time = reltimestr(reltime(start_time))
     echo status . " in " . elapsed_time . "s."
+    call s:DisplayOutput(output, 0) " Show the output in a buffer (success case)
+endfunction
+
+" Helper function to display output in a temporary buffer if it's long
+function! s:DisplayOutput(output, is_error)
+    if strlen(a:output) > 1000 || a:is_error
+        " Open a new buffer for output
+        new
+        call setline(1, split(a:output, '\n')) " Insert the output into the buffer
+        setlocal buftype=nofile bufhidden=wipe noswapfile " Set temporary buffer options
+        if a:is_error
+            echohl ErrorMsg | echo "Output displayed in temporary buffer due to error." | echohl None
+        else
+            echo "Output displayed in temporary buffer."
+        endif
+    else
+        " Print output directly if it's short
+        echo "\n\n" . a:output
+    endif
 endfunction
 
 "Leader key
