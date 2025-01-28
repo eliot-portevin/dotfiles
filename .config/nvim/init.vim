@@ -41,6 +41,21 @@ require('nvim-treesitter.configs').setup {
 EOF
 
 """"""""""""""""""""""""""""""""""""""""
+""""""""""""Auto-pairs""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""""
+let g:AutoPairs = {
+			\ '(':')',
+			\ '[':']', 
+			\ '{':'}',
+			\ "'":"'",
+			\ '"':'"',
+			\ "`":"`",
+			\ '```':'```',
+			\ '"""':'"""',
+			\ "'''":"'''",
+			\ '$':'$'}
+
+""""""""""""""""""""""""""""""""""""""""
 """"""""""""Lightline"""""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""
 let g:lightline = {
@@ -139,7 +154,9 @@ function! RunOrCompile()
     " Calculate elapsed time
     let elapsed_time = reltimestr(reltime(start_time))
     echo status . " in " . elapsed_time . "s."
-    call s:DisplayOutput(output, 0) " Show the output in a buffer (success case)
+	if filetype != 'tex'				" Ignore successfull output for latex
+		call s:DisplayOutput(output, 0) " Show the output in a buffer (success case)
+	endif
 endfunction
 
 " Helper function to display output in a temporary buffer if it's long
