@@ -126,7 +126,7 @@ hi Normal guibg=NONE ctermbg=NONE   " Sets Vim to be transparent
 function! RunOrCompile()
     " Define a dictionary mapping file extensions to their commands
     let file_commands = {
-                \ 'tex': 'pdflatex ' . shellescape(expand('%')),
+                \ 'tex': 'pdflatex --shell-escape ' . shellescape(expand('%')),
                 \ 'py': 'python3 ' . shellescape(expand('%')),
                 \ 'c': 'make ' . shellescape(expand('%:r')) . ' && ./' . shellescape(expand('%:r'))
                 \ }
