@@ -11,7 +11,7 @@ set pages-per-row 1
 set scroll-page-aware "true"
 set smooth-scroll "true"
 set scroll-full-overlap 0.01
-set scroll-step 1
+set scroll-step 100
 
 #zoom settings
 set zoom-min 10
@@ -21,6 +21,7 @@ set font "Jetbrains Mono 15"
 set default-bg "#000000" #00
 set default-fg "#F7F7F6" #01
 
+set render-loading "false"
 unmap f
 map f toggle_fullscreen
 map [fullscreen] f toggle_fullscreen
