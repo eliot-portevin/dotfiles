@@ -21,6 +21,7 @@ Plug 'luochen1990/rainbow'              " Change paranthesis colour by pair
 Plug 'itchyny/lightline.vim'            " Vim status line
 Plug 'jiangmiao/auto-pairs'             " Auto open and close brackets
 Plug 'catppuccin/nvim', { 'as': 'catppuccin' } " Colour theme
+Plug 'lervag/vimtex'					" Support for Latex
 
 call plug#end()
 
@@ -110,23 +111,36 @@ let g:startify_files_number = 5
 """"""""""""""""""""""""""""""""""""""""
 let g:rainbow_active = 1
 
+
+""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""" Vimtex """"""""""""""""
+""""""""""""""""""""""""""""""""""""""""
+" This is necessary for VimTeX to load properly. The "indent" is optional.
+" Note: Most plugin managers will do this automatically!
+filetype plugin indent on
+
+" This enables Vim's and neovim's syntax-related features. Without this, some
+" VimTeX features will not work (see ":help vimtex-requirements" for more
+" info).
+" Note: Most plugin managers will do this automatically!
+syntax enable
+
+let g:vimtex_view_general_viewer = 'zathura'
+let g:vimtex_view_zathura_options = '-reuse-instance'
+
 """"""""""""""""""""""""""""""""""""""""
 """"""""""""""""Diverse"""""""""""""""""
 """"""""""""""""""""""""""""""""""""""""
 set number
-
-
+let maplocalleader="\<space>"
 set shell=bash						" Vim calls commands with bash
-
 hi Normal guibg=NONE ctermbg=NONE   " Sets Vim to be transparent
 
-""""""""""""""""""""""""""""""""""""""""
-""""""Run or Compile Current File"""""""
-""""""""""""""""""""""""""""""""""""""""
+"""""""""""""""""""""""""""""""""""""""""
+"""""""Run or Compile Current File"""""""
+"""""""""""""""""""""""""""""""""""""""""
 function! RunOrCompile()
-    " Define a dictionary mapping file extensions to their commands
     let file_commands = {
-                \ 'tex': 'pdflatex --shell-escape ' . shellescape(expand('%')),
                 \ 'py': 'python3 ' . shellescape(expand('%')),
                 \ 'c': 'make ' . shellescape(expand('%:r')) . ' && ./' . shellescape(expand('%:r'))
                 \ }
@@ -139,10 +153,10 @@ function! RunOrCompile()
 
     if has_key(file_commands, filetype)
         let command = file_commands[filetype]
-        let output = system(command)	" Execute the command and capture output
+        let output = system(command)
         if v:shell_error
             echohl ErrorMsg | echo "Command failed for " . filename | echohl None
-            call s:DisplayOutput(output, 1) " Show the output in a buffer (failure case)
+            call s:DisplayOutput(output, 1)
             return
         endif
         let status = "Operation successful for " . filename
@@ -154,16 +168,13 @@ function! RunOrCompile()
     " Calculate elapsed time
     let elapsed_time = reltimestr(reltime(start_time))
     echo status . " in " . elapsed_time . "s."
-	if filetype != 'tex'				" Ignore successfull output for latex
-		call s:DisplayOutput(output, 0) " Show the output in a buffer (success case)
-	endif
+	call s:DisplayOutput(output, 0)
 endfunction
 
-" Helper function to display output in a temporary buffer if it's long
 function! s:DisplayOutput(output, is_error)
     if strlen(a:output) > 1000 || a:is_error
         " Open a new buffer for output
-        new
+        botright new
         call setline(1, split(a:output, '\n')) " Insert the output into the buffer
         setlocal buftype=nofile bufhidden=wipe noswapfile " Set temporary buffer options
         if a:is_error
@@ -178,7 +189,4 @@ function! s:DisplayOutput(output, is_error)
 endfunction
 
 "Leader key
-let mapleader = " "
-nmap <leader>t :<C-u>echo "Normal map"<cr>
-vmap <leader>v :<C-u>echo "Visual map"<cr>
-nnoremap <Leader>r :call RunOrCompile()<CR>
+nnoremap <LocalLeader>r :call RunOrCompile()<CR>
